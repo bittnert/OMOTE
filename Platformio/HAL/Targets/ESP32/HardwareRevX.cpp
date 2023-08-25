@@ -73,7 +73,7 @@ void HardwareRevX::init() {
 
   this->mDisplay = Display::getInstance(std::shared_ptr<HardwareAbstract>(this));
   this->mBattery = std::make_shared<Battery>(ADC_BAT,CRG_STAT);
-  this->mWifiHandler = wifiHandler::getInstance(std::shared_ptr<HardwareAbstract>(this));
+  this->mWifiHandler = wifiHandler::getInstance();
   wakeup_reason = getWakeReason();
   initIO();
   setupBacklight();
