@@ -13,7 +13,7 @@ The following basic building block will be explained:
 * [Device Type](#devices-type) Not visible to normal users except when a new, unknown, devices is added.
 * [Devices](#devices) Most basic building blocks.
 * [Action](#action) Combination of devices to create some defined behavior.
-* [Grouping](#grouping) Combination of Actions and devices which additionally represent a state machine to modify button behavior.
+* [Scene](#scene) Combination of Actions and devices which additionally represent a state machine to modify button behavior.
 
 ### Devices Type
 
@@ -48,13 +48,13 @@ For example, one action could consist of the following steps:
 
 Inside the an Action, the device and the command together with a timeout is specified so the remote control has just a list of commands to execute. The execution of an action does not change the meaning of any other buttons on the remote control but only preform certain steps in an certain order.
 
-### Grouping
+### Scene
 
 *I don't like this naming, maybe we can come up with some better name*
 
-A Grouping would use Devices and Actions and group them together. Specifically, when a group is selected, some sort of state machine would be added to the remote control.
+A Scene would use Devices and Actions and group them together. Specifically, when a Scene is selected, some sort of state machine would be added to the remote control.
 
-For example, there could be a Group for watching some Netflix (or similar) on a projector. When this group is selected, the starting Action would be the one described above where the projector, screen, video source and audio system is turned on.
+For example, there could be a Scene for watching some Netflix (or similar) on a projector. When this Scene is selected, the starting Action would be the one described above where the projector, screen, video source and audio system is turned on.
 
 However, in addition the buttons on the remote are remapped. For example, the volume keys would send out IR codes for the Audio System while the arrow keys would send out signals to the video source (e.g. WiFi commands to a FireTV stick or IR signals to a computer or similar).
 
@@ -66,7 +66,7 @@ When then the off button is pressed, it would send the following commands
 * Role up the projector screen
 * Turn off the projector
 
-The idea here is, that this is the typical use case. If someone wants to watch some film or play video games, the group can be started and then the remote control already knows what command to send where in order to control the different aspects.
+The idea here is, that this is the typical use case. If someone wants to watch some film or play video games, the Scene can be started and then the remote control already knows what command to send where in order to control the different aspects.
 
 ## Concept for remote configuration
 
@@ -80,11 +80,11 @@ As the configuration structure is only created once but read/used by the remote 
 
 Additionally, the structure should be stored in a binary format, as the hardware of the remote control is very limited in terms of memory and CPU performance. This would save memory on Flash (and maybe RAM) and easy the reading of the data for the CPU as not translation from a string based configuration has to be done.
 
-As the exact size of the configuration structure depends on the configured Devices/Actions/Groups, it must contain information on how big the data is.
+As the exact size of the configuration structure depends on the configured Devices/Actions/Scene, it must contain information on how big the data is.
 
 Do improve reliability, the configuration structure should contain a version which indicates the structure of the configuration structure (so the firmware knows if it can understand the configuration or not) as well as a CRC32 (or similar) to ensure the integrity of the configuration structure before it is used.
 
-Either one configuration structure which contains all Devices/Actions/Groups or three separate configuration structures are possible. If three different structures are used, three different version would need to be used.
+Either one configuration structure which contains all Devices/Actions/Scene or three separate configuration structures are possible. If three different structures are used, three different version would need to be used.
 
 In this document, the three configuration structures will be described individually. However, as the structures might reference each other, it is recommended to combined them into one structure so they are consistent.
 
@@ -133,29 +133,29 @@ The figure below shows the structure of the Action configuration.
 
 ![[Action_config.png]]
 
-It would also be possible to have an Action which does not have an Action name (in this case the name could be a string of length 0). These actions might be needed/used for Groups but they can not be triggered by the user directly.
+It would also be possible to have an Action which does not have an Action name (in this case the name could be a string of length 0). These actions might be needed/used for Scenes but they can not be triggered by the user directly.
 
-## Group configuration structure
+## Scene configuration structure
 
-The Group configuration will use the Device and Action configuration to provide specific functionality where buttons are mapped to different, specific devices and buttons.
+The Scene configuration will use the Device and Action configuration to provide specific functionality where buttons are mapped to different, specific devices and buttons.
 
-The following information needs to be provided for each Group defined
+The following information needs to be provided for each Scene defined
 
-* Name of the Group
-  * String for the user to identify the Group
+* Name of the Scene
+  * String for the user to identify the Scene
 * Power Up Action
-  * An Action ID (or Device and Button ID) which has to be executed when Group is started
+  * An Action ID (or Device and Button ID) which has to be executed when Scene is started
 * Power Down Action
-  * An Action ID (or Device and Button ID) which has to be executed when the Group is stopped
+  * An Action ID (or Device and Button ID) which has to be executed when the Scene is stopped
 * For each physical button
   * An Action ID or Device and Button ID to be mapped to the specific physical button
 * For each virtual button
   * Name of the virtual button
   * An Action ID or Device and Button Id to be mapped to the virtual button
 
-The Figure below shows the the structure of such a Group configuration
+The Figure below shows the the structure of such a Scene configuration
 
-![[Group_config.png]]
+![[Scene_config.png]]
 
 ## Configuration structure creation
 
